@@ -13,6 +13,9 @@ import { MessageService } from './message/message.service';
 import { Message } from './message/message.entity';
 import { join } from 'path';
 import { UserModule } from './user/user.module';
+import { ChatModule } from './chat/chat.module';
+import { MessageModule } from './message/message.module';
+import { DataSource } from 'typeorm';
 
 require('dotenv').config({ path: join(__dirname, '../.env') });
 
@@ -30,13 +33,12 @@ require('dotenv').config({ path: join(__dirname, '../.env') });
       autoLoadEntities: true,
     }),
     UserModule,
+    ChatModule,
+    MessageModule,
   ],
-  controllers: [
-    AppController,
-    UserController,
-    ChatController,
-    MessageController,
-  ],
-  providers: [AppService, UserService, ChatService, MessageService],
+  controllers: [AppController],
+  providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+}
