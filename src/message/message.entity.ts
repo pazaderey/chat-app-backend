@@ -5,6 +5,7 @@ import {
   OneToOne,
   ManyToOne,
   JoinTable,
+  CreateDateColumn,
 } from 'typeorm';
 
 import { User } from 'src/user/user.entity';
@@ -13,7 +14,7 @@ import { Chat } from 'src/chat/chat.entity';
 @Entity()
 export class Message {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @OneToOne(() => Chat)
   @JoinTable()
@@ -22,9 +23,9 @@ export class Message {
   @ManyToOne(() => User)
   author: User;
 
-  @Column()
+  @Column({ type: 'varchar', length: 500 })
   text: string;
 
-  @Column()
-  created_at: Date;
+  @CreateDateColumn({ type: 'timestamp' })
+  created_at!: Date;
 }

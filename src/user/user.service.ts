@@ -11,7 +11,20 @@ export class UserService {
     private usersRepository: Repository<User>,
   ) {}
 
+  async getAll() {
+    return this.usersRepository.find();
+  }
+
+  async getOne(id: number) {
+    return this.usersRepository.findOneBy({ id });
+  }
+
   async createOne(createUser: UserDTO) {
-    return this.usersRepository.create(UserDTO.toUser(createUser));
+    const user = this.usersRepository.create(UserDTO.toUser(createUser));
+    return user.id;
+  }
+
+  async deleteOne(id: number) {
+    await this.usersRepository.delete(id);
   }
 }

@@ -5,6 +5,7 @@ import {
   Unique,
   ManyToMany,
   JoinTable,
+  CreateDateColumn,
 } from 'typeorm';
 
 import { User } from 'src/user/user.entity';
@@ -13,15 +14,15 @@ import { User } from 'src/user/user.entity';
 @Unique(['name'])
 export class Chat {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 30 })
   name: string;
 
   @ManyToMany(() => User)
   @JoinTable()
   users: User[];
 
-  @Column()
-  created_at: Date;
+  @CreateDateColumn({ type: 'timestamp' })
+  created_at!: Date;
 }

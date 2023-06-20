@@ -7,8 +7,8 @@ export class ChatController {
   constructor(private chatService: ChatService) {}
 
   @Post('add')
-  async createOne(creatChat: ChatDTO) {
-    return this.chatService.createOne(creatChat);
+  async createOne(createChat: ChatDTO) {
+    return this.chatService.createOne(createChat);
   }
 
   @Get('get')

@@ -1,14 +1,20 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  Unique,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity()
 @Unique(['username'])
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 30 })
   username: string;
 
-  @Column()
-  created_at: Date;
+  @CreateDateColumn({ type: 'timestamp' })
+  created_at!: Date;
 }
