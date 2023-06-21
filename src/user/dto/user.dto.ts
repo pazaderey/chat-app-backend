@@ -1,4 +1,4 @@
-import { User } from './user.entity';
+import { User } from '../user.entity';
 import { IsString, IsNotEmpty } from 'class-validator';
 
 export class UserDTO implements Readonly<UserDTO> {

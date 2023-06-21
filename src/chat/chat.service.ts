@@ -7,7 +7,6 @@ import { User } from 'src/user/user.entity';
 import { validate } from 'class-validator';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
-import { Message } from 'src/message/message.entity';
 
 @Injectable()
 export class ChatService {
@@ -16,8 +15,6 @@ export class ChatService {
     private chatRepository: Repository<Chat>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectRepository(Message)
-    private messageRepository: Repository<Message>,
   ) {}
 
   async getAll() {
