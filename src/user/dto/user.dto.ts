@@ -4,9 +4,9 @@ import { IsString, IsNotEmpty } from 'class-validator';
 export class UserDTO implements Readonly<UserDTO> {
   @IsNotEmpty()
   @IsString()
-  username: string;
+  username!: string;
 
-  static toUser(dto: Partial<UserDTO>) {
+  static toUser(dto: UserDTO) {
     const it = new User();
     it.username = dto.username;
     return it;

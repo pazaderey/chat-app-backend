@@ -1,6 +1,3 @@
-import { User } from 'src/user/user.entity';
-import { Chat } from 'src/chat/chat.entity';
-import { Message } from 'src/message/message.entity';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { join } from 'path';
 
@@ -15,7 +12,7 @@ export class ConfigService {
       throw new Error(`config error - missing env.${key}`);
     }
 
-    return value;
+    return value ?? '';
   }
 
   ensureValues(keys: string[]) {
@@ -27,6 +24,11 @@ export class ConfigService {
     return this.getValue('PORT');
   }
 
+  isProduction() {
+    const mode = this.getValue('MODE', false);
+    return mode !== 'DEV';
+  }
+
   getTypeOrmConfig(): TypeOrmModuleOptions {
     return {
       type: 'postgres',
@@ -35,11 +37,9 @@ export class ConfigService {
       username: this.getValue('POSTGRES_USER'),
       password: this.getValue('POSTGRES_PASSWORD'),
       database: this.getValue('POSTGRES_DB'),
-      entities: [User, Chat, Message],
-      migrations: ['dist/migrations/*.{ts,js}'],
-      migrationsTableName: 'typeorm_migrations',
+      entities: [join(__dirname, '../**/*.entity.{ts,js}')],
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: !this.isProduction(),
     };
   }
 }

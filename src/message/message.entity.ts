@@ -15,13 +15,13 @@ export class Message {
   id!: number;
 
   @ManyToOne(() => Chat)
-  chat: Chat;
+  chat!: Chat;
 
   @ManyToOne(() => User)
-  author: User;
+  author!: User;
 
   @Column({ type: 'varchar', length: 500 })
-  text: string;
+  text!: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at!: Date;

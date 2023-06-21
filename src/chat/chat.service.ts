@@ -49,7 +49,7 @@ export class ChatService {
     return newChat.id;
   }
 
-  async getByUser(userId: number) {
+  async getByUser(userId: number): Promise<Chat[]> {
     const result = await this.chatRepository.manager.query(
       `SELECT "c"."id", "c"."name", "c"."created_at", MAX("m"."created_at") as "last"
       FROM "chat_message" "m"
@@ -61,6 +61,7 @@ export class ChatService {
     );
 
     return result.map((r) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { last: _, ...chat } = r;
       return chat;
     });

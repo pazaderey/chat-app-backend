@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { ChatDTO, FindChatDTO } from './dto';
 
@@ -12,6 +12,7 @@ export class ChatController {
   }
 
   @Post('get')
+  @HttpCode(HttpStatus.OK)
   async getByUser(@Body() body: FindChatDTO) {
     return this.chatService.getByUser(body.user);
   }

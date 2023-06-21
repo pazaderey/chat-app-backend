@@ -1,0 +1,12 @@
+node_modules
+.idea
+dist
+README.md
+.eslintrc.js
+.prettierrc
+.git
+.gitignore
+.env.example
+Dockerfile
+docker-compose.yml
+test

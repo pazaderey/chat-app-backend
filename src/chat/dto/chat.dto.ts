@@ -4,13 +4,13 @@ import { IsString, IsArray, IsNotEmpty } from 'class-validator';
 export class ChatDTO implements Readonly<ChatDTO> {
   @IsNotEmpty()
   @IsString()
-  name: string;
+  name!: string;
 
   @IsNotEmpty()
   @IsArray()
-  users: number[];
+  users!: number[];
 
-  static toChat(dto: Partial<ChatDTO>) {
+  static toChat(dto: ChatDTO) {
     const it = new Chat();
     it.name = dto.name;
     return it;

@@ -4,15 +4,15 @@ import { IsNumber, IsString, IsNotEmpty } from 'class-validator';
 export class MessageDTO implements Readonly<MessageDTO> {
   @IsNotEmpty()
   @IsNumber()
-  chat: number;
+  chat!: number;
 
   @IsNotEmpty()
   @IsNumber()
-  author: number;
+  author!: number;
 
   @IsNotEmpty()
   @IsString()
-  text: string;
+  text!: string;
 
   static toMessage(dto: MessageDTO) {
     const it = new Message();

@@ -11,7 +11,7 @@ export class User {
   id!: number;
 
   @Column({ type: 'varchar', length: 30, unique: true })
-  username: string;
+  username!: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at!: Date;

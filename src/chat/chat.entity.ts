@@ -17,11 +17,11 @@ export class Chat {
   id!: number;
 
   @Column({ type: 'varchar', length: 30 })
-  name: string;
+  name!: string;
 
   @ManyToMany(() => User)
   @JoinTable()
-  users: User[];
+  users!: User[];
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at!: Date;

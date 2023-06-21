@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { FindMessageDTO, MessageDTO } from './dto';
 
@@ -7,6 +7,7 @@ export class MessageController {
   constructor(private messageService: MessageService) {}
 
   @Post('get')
+  @HttpCode(HttpStatus.OK)
   async getByChat(@Body() body: FindMessageDTO) {
     return this.messageService.getByChat(body.chat);
   }
