@@ -2,17 +2,15 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  Unique,
   CreateDateColumn,
 } from 'typeorm';
 
-@Entity()
-@Unique(['username'])
+@Entity({ name: 'chat_user' })
 export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ type: 'varchar', length: 30 })
+  @Column({ type: 'varchar', length: 30, unique: true })
   username: string;
 
   @CreateDateColumn({ type: 'timestamp' })
