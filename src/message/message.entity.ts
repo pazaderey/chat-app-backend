@@ -2,22 +2,19 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
   ManyToOne,
-  JoinTable,
   CreateDateColumn,
 } from 'typeorm';
 
 import { User } from 'src/user/user.entity';
 import { Chat } from 'src/chat/chat.entity';
 
-@Entity()
+@Entity({ name: 'chat_message' })
 export class Message {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @OneToOne(() => Chat)
-  @JoinTable()
+  @ManyToOne(() => Chat)
   chat: Chat;
 
   @ManyToOne(() => User)

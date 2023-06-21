@@ -20,6 +20,7 @@ export class MessageService {
 
   async getByChat(chatId: number) {
     return this.messageRepository.find({
+      relations: { author: true },
       where: { chat: { id: chatId } },
       order: { created_at: 'ASC' },
     });

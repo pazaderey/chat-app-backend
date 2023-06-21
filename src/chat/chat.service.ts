@@ -7,6 +7,7 @@ import { User } from 'src/user/user.entity';
 import { validate } from 'class-validator';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
+import { Message } from 'src/message/message.entity';
 
 @Injectable()
 export class ChatService {
@@ -15,6 +16,8 @@ export class ChatService {
     private chatRepository: Repository<Chat>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(Message)
+    private messageRepository: Repository<Message>,
   ) {}
 
   async getAll() {
@@ -50,9 +53,19 @@ export class ChatService {
   }
 
   async getByUser(userId: number) {
-    return this.chatRepository.find({
-      relations: { users: true },
-      where: { users: { id: userId } },
+    const result = await this.chatRepository.manager.query(
+      `SELECT "c"."id", "c"."name", "c"."created_at", MAX("m"."created_at") as "last"
+      FROM "chat_message" "m"
+      JOIN "chat" "c" ON "c"."id" = "m"."chatId"
+      JOIN "chat_users_chat_user" "cu" ON "cu"."chatId" = "c"."id"
+      WHERE "cu"."chatUserId" = ${userId}
+      GROUP BY "c"."id", "c"."name", "c"."created_at"
+      ORDER BY "last" DESC;`,
+    );
+
+    return result.map((r) => {
+      const { last: _, ...chat } = r;
+      return chat;
     });
   }
 }
