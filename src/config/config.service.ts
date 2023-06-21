@@ -39,7 +39,7 @@ export class ConfigService {
       database: this.getValue('POSTGRES_DB'),
       entities: [join(__dirname, '../**/*.entity.{ts,js}')],
       autoLoadEntities: true,
-      synchronize: !this.isProduction(),
+      synchronize: true,
     };
   }
 }

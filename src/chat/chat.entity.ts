@@ -2,7 +2,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  Unique,
   ManyToMany,
   JoinTable,
   CreateDateColumn,
@@ -11,12 +10,11 @@ import {
 import { User } from 'src/user/user.entity';
 
 @Entity()
-@Unique(['name'])
 export class Chat {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ type: 'varchar', length: 30 })
+  @Column({ type: 'varchar', length: 30, unique: true })
   name!: string;
 
   @ManyToMany(() => User)
