@@ -1,12 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Chat } from './chat.entity';
+import { Chat } from './entities';
 import { Repository, In } from 'typeorm';
-import { ChatDTO } from './dto';
-import { User } from 'src/user/user.entity';
+import { CreateChatDTO } from './dto';
+import { User } from 'src/user/entities';
 import { validate } from 'class-validator';
-import { HttpException } from '@nestjs/common/exceptions/http.exception';
-import { HttpStatus } from '@nestjs/common';
 
 @Injectable()
 export class ChatService {
@@ -21,7 +19,7 @@ export class ChatService {
     return this.chatRepository.find();
   }
 
-  async createOne(createChat: ChatDTO) {
+  async createOne(createChat: CreateChatDTO) {
     const errors = await validate(createChat);
     if (errors.length) {
       throw new HttpException(
@@ -38,7 +36,7 @@ export class ChatService {
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
-    const chat = ChatDTO.toChat(createChat);
+    const chat = CreateChatDTO.toChat(createChat);
 
     const users = await this.userRepository.find({
       where: { id: In(userIds) },

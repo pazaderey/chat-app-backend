@@ -1,8 +1,8 @@
-import { Chat } from '../chat.entity';
+import { Chat } from '../entities/chat.entity';
 import { IsString, IsArray, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger/dist/decorators';
 
-export class ChatDTO implements Readonly<ChatDTO> {
+export class CreateChatDTO implements Readonly<CreateChatDTO> {
   @ApiProperty({
     example: 'Secret chat',
     maxLength: 30,
@@ -24,7 +24,7 @@ export class ChatDTO implements Readonly<ChatDTO> {
   @IsArray()
   users!: number[];
 
-  static toChat(dto: ChatDTO) {
+  static toChat(dto: CreateChatDTO) {
     const it = new Chat();
     it.name = dto.name;
     return it;

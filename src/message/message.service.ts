@@ -1,11 +1,11 @@
 import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Message } from './message.entity';
+import { Message } from './entities';
 import { Repository } from 'typeorm';
-import { MessageDTO } from './dto';
+import { CreateMessageDTO } from './dto';
 import { validate } from 'class-validator';
-import { Chat } from 'src/chat/chat.entity';
-import { User } from 'src/user/user.entity';
+import { Chat } from 'src/chat/entities';
+import { User } from 'src/user/entities';
 
 @Injectable()
 export class MessageService {
@@ -26,7 +26,7 @@ export class MessageService {
     });
   }
 
-  async createOne(createMessage: MessageDTO) {
+  async createOne(createMessage: CreateMessageDTO) {
     const errors = await validate(createMessage);
     if (errors.length) {
       throw new HttpException(
@@ -35,7 +35,7 @@ export class MessageService {
       );
     }
 
-    const message = MessageDTO.toMessage(createMessage);
+    const message = CreateMessageDTO.toMessage(createMessage);
     const author = await this.userRepository.findOneBy({
       id: createMessage.author,
     });

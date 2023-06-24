@@ -1,24 +1,25 @@
-import { Controller, Post, Body, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserDTO } from './dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { CreateUserDTO } from './dto';
+import {
+  ApiOperation,
+  ApiCreatedResponse,
+  ApiBadRequestResponse,
+  ApiUnprocessableEntityResponse,
+} from '@nestjs/swagger';
 
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
 
   @ApiOperation({ summary: 'Creates new user in the database' })
-  @ApiResponse({ status: HttpStatus.CREATED, description: 'Created' })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'User input is invalid',
-  })
-  @ApiResponse({
-    status: HttpStatus.UNPROCESSABLE_ENTITY,
+  @ApiCreatedResponse({ description: 'Created', type: Number })
+  @ApiBadRequestResponse({ description: 'User input is invalid' })
+  @ApiUnprocessableEntityResponse({
     description: 'User with such name already exists',
   })
   @Post('add')
-  async createOne(@Body() body: UserDTO) {
+  async createOne(@Body() body: CreateUserDTO) {
     return this.userService.createOne(body);
   }
 }

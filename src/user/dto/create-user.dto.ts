@@ -1,8 +1,8 @@
-import { User } from '../user.entity';
+import { User } from '../entities/user.entity';
 import { IsString, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class UserDTO implements Readonly<UserDTO> {
+export class CreateUserDTO implements Readonly<CreateUserDTO> {
   @ApiProperty({
     example: 'Carl',
     description: 'Username used in the chat',
@@ -14,7 +14,7 @@ export class UserDTO implements Readonly<UserDTO> {
   @IsString()
   username!: string;
 
-  static toUser(dto: UserDTO) {
+  static toUser(dto: CreateUserDTO) {
     const it = new User();
     it.username = dto.username;
     return it;
