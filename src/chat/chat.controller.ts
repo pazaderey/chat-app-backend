@@ -1,13 +1,14 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiUnprocessableEntityResponse,
+} from '@nestjs/swagger';
+
 import { ChatService } from './chat.service';
 import { CreateChatDTO, FindChatDTO } from './dto';
-import {
-  ApiOperation,
-  ApiBadRequestResponse,
-  ApiUnprocessableEntityResponse,
-  ApiOkResponse,
-  ApiCreatedResponse,
-} from '@nestjs/swagger';
 
 @Controller('chats')
 export class ChatController {

@@ -1,13 +1,14 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
-import { MessageService } from './message.service';
-import { FindMessageDTO,CreateMessageDTO } from './dto';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import {
-  ApiOperation,
-  ApiOkResponse,
-  ApiCreatedResponse,
   ApiBadRequestResponse,
+  ApiCreatedResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
 } from '@nestjs/swagger';
+
+import { CreateMessageDTO, FindMessageDTO } from './dto';
+import { MessageService } from './message.service';
 
 @Controller('messages')
 export class MessageController {
@@ -30,7 +31,7 @@ export class MessageController {
     description: 'Chat or author ID not found in the database',
   })
   @Post('add')
-  async createOne(@Body() body:CreateMessageDTO) {
+  async createOne(@Body() body: CreateMessageDTO) {
     return this.messageService.createOne(body);
   }
 }

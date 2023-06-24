@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsInt } from 'class-validator';
+import { IsInt, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger/dist/decorators';
 
 export class FindMessageDTO implements Readonly<FindMessageDTO> {

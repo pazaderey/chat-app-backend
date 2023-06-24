@@ -1,6 +1,7 @@
-import { User } from '../entities/user.entity';
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+
+import { User } from '../entities/user.entity';
 
 export class CreateUserDTO implements Readonly<CreateUserDTO> {
   @ApiProperty({

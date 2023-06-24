@@ -1,10 +1,12 @@
-import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Chat } from './entities';
-import { Repository, In } from 'typeorm';
-import { CreateChatDTO } from './dto';
-import { User } from 'src/user/entities';
 import { validate } from 'class-validator';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, In } from 'typeorm';
+
+import { User } from '../user/entities';
+
+import { CreateChatDTO } from './dto';
+import { Chat } from './entities';
 
 @Injectable()
 export class ChatService {
@@ -48,6 +50,7 @@ export class ChatService {
   }
 
   async getByUser(userId: number): Promise<Chat[]> {
+    // finds all user chats, ordered by last sent message time in it
     const result = await this.chatRepository.manager.query(
       `SELECT "c"."id", "c"."name", "c"."created_at", MAX("m"."created_at") as "last"
       FROM "chat_message" "m"
@@ -58,9 +61,10 @@ export class ChatService {
       ORDER BY "last" DESC;`,
     );
 
-    return result.map((r) => {
+    // due to sql specific the 'created_at' as 'last' column stays with the chat data
+    return result.map((c) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { last: _, ...chat } = r;
+      const { last: _, ...chat } = c;
       return chat;
     });
   }

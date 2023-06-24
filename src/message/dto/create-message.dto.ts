@@ -1,6 +1,7 @@
-import { Message } from '../entities/message.entity';
-import { IsNumber, IsString, IsNotEmpty } from 'class-validator';
+import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger/dist/decorators';
+
+import { Message } from '../entities/message.entity';
 
 export class CreateMessageDTO implements Readonly<CreateMessageDTO> {
   @ApiProperty({
@@ -9,7 +10,7 @@ export class CreateMessageDTO implements Readonly<CreateMessageDTO> {
     required: true,
   })
   @IsNotEmpty()
-  @IsNumber()
+  @IsInt()
   chat!: number;
 
   @ApiProperty({
@@ -18,7 +19,7 @@ export class CreateMessageDTO implements Readonly<CreateMessageDTO> {
     required: true,
   })
   @IsNotEmpty()
-  @IsNumber()
+  @IsInt()
   author!: number;
 
   @ApiProperty({

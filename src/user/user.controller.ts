@@ -1,12 +1,13 @@
-import { Controller, Post, Body } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDTO } from './dto';
+import { Body, Controller, Post } from '@nestjs/common';
 import {
-  ApiOperation,
-  ApiCreatedResponse,
   ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiOperation,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
+
+import { CreateUserDTO } from './dto';
+import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {

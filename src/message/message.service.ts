@@ -1,11 +1,13 @@
-import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Message } from './entities';
-import { Repository } from 'typeorm';
-import { CreateMessageDTO } from './dto';
 import { validate } from 'class-validator';
-import { Chat } from 'src/chat/entities';
-import { User } from 'src/user/entities';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { Chat } from '../chat/entities';
+import { User } from '../user/entities';
+
+import { CreateMessageDTO } from './dto';
+import { Message } from './entities';
 
 @Injectable()
 export class MessageService {
