@@ -35,7 +35,7 @@ export class ChatService {
     if (existing !== null) {
       throw new HttpException(
         { message: 'Chat with such name already exists' },
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
     const chat = ChatDTO.toChat(createChat);

@@ -39,7 +39,7 @@ export class UserService {
     if (existing !== null) {
       throw new HttpException(
         { message: 'User with such name already exists' },
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
 
