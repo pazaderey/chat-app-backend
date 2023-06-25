@@ -5,6 +5,7 @@ export const nameProps: ApiPropertyOptions = {
   example: 'Secret chat',
   required: true,
   maxLength: 30,
+  type: String,
 };
 
 export const usersProps: ApiPropertyOptions = {
