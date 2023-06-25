@@ -28,7 +28,6 @@ export class MessageController {
   })
   @ApiOkResponse({ description: 'Success' })
   @Get('get')
-  @HttpCode(HttpStatus.OK)
   async getByChat(@Body() body: FindMessageDTO) {
     return this.messageService.getByChat(body.chat);
   }
@@ -48,8 +47,9 @@ export class MessageController {
   @ApiNoContentResponse({ description: 'Updated' })
   @ApiBadRequestResponse({ description: 'Message input is invalid' })
   @ApiNotFoundResponse({ description: 'Message not found' })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('update')
   async updateOne(@Body() body: UpdateMessageDTO) {
-    this.messageService.updateOne(body);
+    await this.messageService.updateOne(body);
   }
 }

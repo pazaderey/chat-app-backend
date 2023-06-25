@@ -1,5 +1,10 @@
 import { validate } from 'class-validator';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -39,32 +44,31 @@ export class MessageService {
   async createOne(createMessage: CreateMessageDTO) {
     const errors = await validate(createMessage);
     if (errors.length) {
-      throw new HttpException(
-        { message: 'Message input is invalid', errors },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BadRequestException({
+        message: 'Message input is invalid',
+        errors,
+      });
     }
 
+    const { author: authorId, chat: chatId } = createMessage;
     const message = CreateMessageDTO.toMessage(createMessage);
-    const author = await this.userRepository.findOneBy({
-      id: createMessage.author,
-    });
+    const author = await this.userRepository.findOneBy({ id: authorId });
     if (author === null) {
-      throw new HttpException(
-        { message: 'Author not found' },
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotFoundException({ message: 'Author not found' });
     }
     message.author = author;
 
-    const chat = await this.chatRepository.findOneBy({
-      id: createMessage.chat,
+    const chat = await this.chatRepository.findOne({
+      relations: { users: true },
+      where: { id: chatId },
     });
     if (chat === null) {
-      throw new HttpException(
-        { message: 'Chat not found' },
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotFoundException({ message: 'Chat not found' });
+    }
+    if (!chat.users.map((u) => u.id).includes(authorId)) {
+      throw new UnprocessableEntityException({
+        message: 'Author is not member of the chat',
+      });
     }
     message.chat = chat;
 
@@ -76,10 +80,10 @@ export class MessageService {
   async updateOne(updateMessage: UpdateMessageDTO) {
     const errors = await validate(updateMessage);
     if (errors.length) {
-      throw new HttpException(
-        { message: 'Message input is invalid', errors },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BadRequestException({
+        message: 'Message input is invalid',
+        errors,
+      });
     }
 
     const { id, text: newText } = updateMessage;
@@ -88,10 +92,7 @@ export class MessageService {
       { text: newText },
     );
     if (!updated.affected) {
-      throw new HttpException(
-        { message: 'Message not found' },
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotFoundException({ message: 'Message not found' });
     }
   }
 

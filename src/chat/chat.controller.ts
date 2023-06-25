@@ -45,15 +45,16 @@ export class ChatController {
     return this.chatService.createOne(createChat);
   }
 
-  @ApiOperation({ summary: 'Update chat name by ID' })
+  @ApiOperation({ summary: 'Update chat by ID' })
   @ApiNoContentResponse({ description: 'Updated' })
   @ApiBadRequestResponse({ description: 'Chat input is invalid' })
   @ApiNotFoundResponse({ description: 'Chat not found' })
   @ApiUnprocessableEntityResponse({
     description: 'Chat with such name already exists',
   })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('update')
   async updateOne(@Body() body: UpdateChatDTO) {
-    this.chatService.updateOne(body);
+    await this.chatService.updateOne(body);
   }
 }

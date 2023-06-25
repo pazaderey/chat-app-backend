@@ -1,7 +1,9 @@
-import { IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Chat } from '../entities';
+import { CreateChatDTO } from './create-chat.dto';
 
-export class UpdateChatDTO implements Readonly<UpdateChatDTO> {
+export class UpdateChatDTO implements Partial<CreateChatDTO> {
   @ApiProperty({
     example: 1,
     description: 'Chat ID',
@@ -9,16 +11,49 @@ export class UpdateChatDTO implements Readonly<UpdateChatDTO> {
   })
   @IsNotEmpty()
   @IsInt()
-  id!: number;
+  readonly id!: number;
 
   @ApiProperty({
     example: 'New name',
     description: 'New chat name',
-    required: true,
+    type: String,
+    required: false,
   })
-  @IsNotEmpty()
   @IsString()
-  name!: string;
+  name: string | undefined;
 
-  // TODO: Users update
+  @ApiProperty({
+    example: [1, 2, 3],
+    description: 'Complete array of chat members',
+    type: 'number[]',
+    required: false,
+  })
+  @IsArray()
+  users: number[] | undefined;
+
+  @ApiProperty({
+    example: [1, 2, 3],
+    description: 'Users to add in chat',
+    type: 'number[]',
+    required: false,
+  })
+  @IsArray()
+  newUsers: number[] | undefined;
+
+  @ApiProperty({
+    example: [1, 2, 3],
+    description: 'Users to delete from chat',
+    type: 'number[]',
+    required: false,
+  })
+  @IsArray()
+  deleteUsers: number[] | undefined;
+
+  static toChat(dto: UpdateChatDTO, source: Chat) {
+    const it = new Chat();
+    it.id = source.id;
+    it.name = dto.name ?? source.name;
+    it.created_at = source.created_at;
+    return it;
+  }
 }

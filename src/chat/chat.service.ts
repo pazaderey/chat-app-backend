@@ -1,7 +1,12 @@
 import { validate } from 'class-validator';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 
 import { User } from '../user/entities';
 
@@ -52,19 +57,18 @@ export class ChatService {
   async createOne(createChat: CreateChatDTO) {
     const errors = await validate(createChat);
     if (errors.length) {
-      throw new HttpException(
-        { message: 'Chat input is invalid', errors },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BadRequestException({
+        message: 'Chat input is invalid',
+        errors,
+      });
     }
 
     const { name, users: userIds } = createChat;
     const existing = await this.chatRepository.findOneBy({ name });
-    if (existing !== null) {
-      throw new HttpException(
-        { message: 'Chat with such name already exists' },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+    if (existing) {
+      throw new UnprocessableEntityException({
+        message: 'Chat with such name already exists',
+      });
     }
     const chat = CreateChatDTO.toChat(createChat);
 
@@ -80,28 +84,50 @@ export class ChatService {
   async updateOne(updateChat: UpdateChatDTO) {
     const errors = await validate(updateChat);
     if (errors.length) {
-      throw new HttpException(
-        { message: 'Chat input is invalid', errors },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BadRequestException({
+        message: 'Chat input is invalid',
+        errors,
+      });
     }
 
-    const { id, name: newName } = updateChat;
-    const existing = await this.chatRepository.findOneBy({ name: newName });
-    if (existing !== null) {
-      throw new HttpException(
-        { message: 'Chat with such name already exists' },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+    const { id } = updateChat;
+    const existing = await this.chatRepository.findOne({
+      relations: { users: true },
+      where: { id },
+    });
+    if (!existing) {
+      throw new NotFoundException({
+        message: 'Chat not found',
+      });
     }
 
-    const updated = await this.chatRepository.update({ id }, { name: newName });
-    if (!updated.affected) {
-      throw new HttpException(
-        { message: 'Chat not found' },
-        HttpStatus.NOT_FOUND,
-      );
+    const { name: newName = existing.name } = updateChat;
+    const existingName = await this.chatRepository.findOne({
+      where: { id: Not(id), name: newName },
+    });
+    if (existingName) {
+      throw new UnprocessableEntityException({
+        message: `Chat with name ${newName} already exists`,
+      });
     }
+
+    const usersSet = new Set([
+      ...(updateChat.users ?? existing.users.map((u) => u.id)),
+      ...(updateChat.newUsers ?? []),
+    ]);
+    const deleteUsersSet = new Set(updateChat.deleteUsers ?? []);
+
+    const userIds = Array.from(
+      [...usersSet].filter((i) => !deleteUsersSet.has(i)),
+    );
+
+    const updatedChat = UpdateChatDTO.toChat(updateChat, existing);
+    const users = await this.userRepository.find({
+      where: { id: In(userIds) },
+    });
+
+    updatedChat.users = users;
+    await this.chatRepository.save(updatedChat);
   }
 
   async deleteOne(id: number) {

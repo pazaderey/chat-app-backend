@@ -1,7 +1,8 @@
 import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { CreateUserDTO } from './create-user.dto';
 
-export class UpdateUserDTO implements Readonly<UpdateUserDTO> {
+export class UpdateUserDTO implements Partial<CreateUserDTO> {
   @ApiProperty({
     example: 1,
     description: 'Message ID',
@@ -9,7 +10,7 @@ export class UpdateUserDTO implements Readonly<UpdateUserDTO> {
   })
   @IsNotEmpty()
   @IsInt()
-  id!: number;
+  readonly id!: number;
 
   @ApiProperty({
     example: 'Carl_1',

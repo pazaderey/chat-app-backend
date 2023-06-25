@@ -1,4 +1,11 @@
-import { Body, Controller, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -33,8 +40,9 @@ export class UserController {
   @ApiUnprocessableEntityResponse({
     description: 'User with such name already exists',
   })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('update')
   async updateOne(@Body() body: UpdateUserDTO) {
-    this.userService.updateOne(body);
+    await this.userService.updateOne(body);
   }
 }
