@@ -14,8 +14,6 @@ async function bootstrap() {
       'Simple chat API that supports multiple conversations for several users',
     )
     .setVersion('1.0.0')
-    .addTag('Messenger')
-    .addTag('API')
     .build();
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api_docs', app, swaggerDocument);

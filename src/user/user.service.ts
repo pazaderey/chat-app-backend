@@ -1,5 +1,10 @@
 import { validate } from 'class-validator';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -28,19 +33,18 @@ export class UserService {
   async createOne(createUser: CreateUserDTO) {
     const errors = await validate(createUser);
     if (errors.length) {
-      throw new HttpException(
-        { message: 'User input is invalid', errors },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BadRequestException({
+        message: 'User input is invalid',
+        errors,
+      });
     }
 
     const { username } = createUser;
     const existing = await this.usersRepository.findOneBy({ username });
     if (existing !== null) {
-      throw new HttpException(
-        { message: `User with username ${username} already exists` },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throw new UnprocessableEntityException({
+        message: `User with username ${username} already exists`,
+      });
     }
 
     const user = CreateUserDTO.toUser(createUser);
@@ -52,10 +56,10 @@ export class UserService {
   async updateOne(updateUser: UpdateUserDTO) {
     const errors = await validate(updateUser);
     if (errors.length) {
-      throw new HttpException(
-        { message: 'User input is invalid', errors },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BadRequestException({
+        message: 'User input is invalid',
+        errors,
+      });
     }
 
     const { id, username: newUsername } = updateUser;
@@ -63,10 +67,9 @@ export class UserService {
       username: newUsername,
     });
     if (existingUsername !== null) {
-      throw new HttpException(
-        { message: `User with username ${newUsername} already exists` },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throw new UnprocessableEntityException({
+        message: `User with username ${newUsername} already exists`,
+      });
     }
 
     const updated = await this.usersRepository.update(
@@ -74,10 +77,7 @@ export class UserService {
       { username: newUsername },
     );
     if (!updated.affected) {
-      throw new HttpException(
-        { message: 'User not found' },
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotFoundException({ message: 'User not found' });
     }
   }
 
