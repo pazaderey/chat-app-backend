@@ -3,23 +3,15 @@ import { ApiProperty } from '@nestjs/swagger/dist/decorators';
 
 import { Chat } from '../entities/chat.entity';
 
+import { nameProps, usersProps } from './api.properties';
+
 export class CreateChatDTO implements Readonly<CreateChatDTO> {
-  @ApiProperty({
-    example: 'Secret chat',
-    maxLength: 30,
-    required: true,
-    description: 'Name of the chat',
-  })
+  @ApiProperty(nameProps)
   @IsNotEmpty()
   @IsString()
   name!: string;
 
-  @ApiProperty({
-    example: [1, 2, 3],
-    required: true,
-    description: 'Chat members',
-    type: 'number[]',
-  })
+  @ApiProperty(usersProps)
   @IsNotEmpty()
   @IsArray()
   users!: number[];

@@ -3,30 +3,20 @@ import { ApiProperty } from '@nestjs/swagger/dist/decorators';
 
 import { Message } from '../entities/message.entity';
 
+import { authorProps, chatProps, textProps } from './api.properties';
+
 export class CreateMessageDTO implements Readonly<CreateMessageDTO> {
-  @ApiProperty({
-    example: 1,
-    description: 'Chat ID to send message',
-    required: true,
-  })
+  @ApiProperty(chatProps)
   @IsNotEmpty()
   @IsInt()
   chat!: number;
 
-  @ApiProperty({
-    example: 1,
-    description: "User ID of the message's author",
-    required: true,
-  })
+  @ApiProperty(authorProps)
   @IsNotEmpty()
   @IsInt()
   author!: number;
 
-  @ApiProperty({
-    example: 'Hello',
-    description: 'Message text',
-    required: true,
-  })
+  @ApiProperty(textProps)
   @IsNotEmpty()
   @IsString()
   text!: string;

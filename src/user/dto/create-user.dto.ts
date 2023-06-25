@@ -3,13 +3,10 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { User } from '../entities/user.entity';
 
+import { usernameProps } from './api.properties';
+
 export class CreateUserDTO implements Readonly<CreateUserDTO> {
-  @ApiProperty({
-    example: 'Carl',
-    description: 'Username used in the chat',
-    maxLength: 30,
-    required: true,
-  })
+  @ApiProperty(usernameProps)
   @IsNotEmpty()
   @IsString()
   username!: string;
