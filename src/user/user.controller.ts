@@ -16,7 +16,7 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @ApiOperation({ summary: 'Creates new user in the database' })
-  @ApiCreatedResponse({ description: 'Created', type: () => Number })
+  @ApiCreatedResponse({ description: 'Created', type: Number })
   @ApiBadRequestResponse({ description: 'User input is invalid' })
   @ApiUnprocessableEntityResponse({
     description: 'User with such name already exists',

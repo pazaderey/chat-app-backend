@@ -9,7 +9,6 @@ export class CreateUserDTO implements Readonly<CreateUserDTO> {
     description: 'Username used in the chat',
     maxLength: 30,
     required: true,
-    uniqueItems: true,
   })
   @IsNotEmpty()
   @IsString()

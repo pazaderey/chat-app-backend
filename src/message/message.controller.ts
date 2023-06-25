@@ -34,7 +34,7 @@ export class MessageController {
   }
 
   @ApiOperation({ summary: 'Create new message in the database' })
-  @ApiCreatedResponse({ description: 'Created', type: () => Number })
+  @ApiCreatedResponse({ description: 'Created', type: Number })
   @ApiBadRequestResponse({ description: 'Message input is invalid' })
   @ApiNotFoundResponse({
     description: 'Chat or author ID not found in the database',

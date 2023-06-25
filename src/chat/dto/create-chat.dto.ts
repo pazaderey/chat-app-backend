@@ -8,7 +8,6 @@ export class CreateChatDTO implements Readonly<CreateChatDTO> {
     example: 'Secret chat',
     maxLength: 30,
     required: true,
-    uniqueItems: true,
     description: 'Name of the chat',
   })
   @IsNotEmpty()

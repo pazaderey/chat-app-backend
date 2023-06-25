@@ -35,7 +35,7 @@ export class ChatController {
   }
 
   @ApiOperation({ summary: 'Create new chat in the database' })
-  @ApiCreatedResponse({ description: 'Created', type: () => Number })
+  @ApiCreatedResponse({ description: 'Created', type: Number })
   @ApiBadRequestResponse({ description: 'Chat input is invalid' })
   @ApiUnprocessableEntityResponse({
     description: 'Chat with such name already exists',
