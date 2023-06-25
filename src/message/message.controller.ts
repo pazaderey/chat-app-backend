@@ -1,13 +1,22 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
+  ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
 
-import { CreateMessageDTO, FindMessageDTO } from './dto';
+import { CreateMessageDTO, FindMessageDTO, UpdateMessageDTO } from './dto';
 import { MessageService } from './message.service';
 
 @Controller('messages')
@@ -18,14 +27,14 @@ export class MessageController {
     summary: 'Get all messages from the chat ordered by send time ASC',
   })
   @ApiOkResponse({ description: 'Success' })
-  @Post('get')
+  @Get('get')
   @HttpCode(HttpStatus.OK)
   async getByChat(@Body() body: FindMessageDTO) {
     return this.messageService.getByChat(body.chat);
   }
 
   @ApiOperation({ summary: 'Create new message in the database' })
-  @ApiCreatedResponse({ description: 'Created', type: Number })
+  @ApiCreatedResponse({ description: 'Created', type: () => Number })
   @ApiBadRequestResponse({ description: 'Message input is invalid' })
   @ApiNotFoundResponse({
     description: 'Chat or author ID not found in the database',
@@ -33,5 +42,14 @@ export class MessageController {
   @Post('add')
   async createOne(@Body() body: CreateMessageDTO) {
     return this.messageService.createOne(body);
+  }
+
+  @ApiOperation({ summary: 'Updates message text by ID' })
+  @ApiNoContentResponse({ description: 'Updated' })
+  @ApiBadRequestResponse({ description: 'Message input is invalid' })
+  @ApiNotFoundResponse({ description: 'Message not found' })
+  @Patch('update')
+  async updateOne(@Body() body: UpdateMessageDTO) {
+    this.messageService.updateOne(body);
   }
 }

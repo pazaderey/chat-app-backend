@@ -3,7 +3,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { CreateUserDTO } from './dto';
+import { CreateUserDTO, UpdateUserDTO } from './dto';
 import { User } from './entities';
 
 @Injectable()
@@ -22,12 +22,10 @@ export class UserService {
   }
 
   async getByUsername(username: string) {
-    return this.usersRepository.find({ where: { username } });
+    return this.usersRepository.findOneBy({ username });
   }
 
   async createOne(createUser: CreateUserDTO) {
-    const { username } = createUser;
-
     const errors = await validate(createUser);
     if (errors.length) {
       throw new HttpException(
@@ -36,10 +34,11 @@ export class UserService {
       );
     }
 
+    const { username } = createUser;
     const existing = await this.usersRepository.findOneBy({ username });
     if (existing !== null) {
       throw new HttpException(
-        { message: 'User with such name already exists' },
+        { message: `User with username ${username} already exists` },
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
@@ -50,7 +49,43 @@ export class UserService {
     return newUser.id;
   }
 
+  async updateOne(updateUser: UpdateUserDTO) {
+    const errors = await validate(updateUser);
+    if (errors.length) {
+      throw new HttpException(
+        { message: 'User input is invalid', errors },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const { id, username: newUsername } = updateUser;
+    const existingUsername = await this.usersRepository.findOneBy({
+      username: newUsername,
+    });
+    if (existingUsername !== null) {
+      throw new HttpException(
+        { message: `User with username ${newUsername} already exists` },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
+    const updated = await this.usersRepository.update(
+      { id },
+      { username: newUsername },
+    );
+    if (!updated.affected) {
+      throw new HttpException(
+        { message: 'User not found' },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+  }
+
   async deleteOne(id: number) {
     await this.usersRepository.delete(id);
+  }
+
+  async deleteByUsername(username: string) {
+    await this.usersRepository.delete({ username });
   }
 }

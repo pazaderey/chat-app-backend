@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { Chat } from '../chat/entities';
 import { User } from '../user/entities';
 
-import { CreateMessageDTO } from './dto';
+import { CreateMessageDTO, UpdateMessageDTO } from './dto';
 import { Message } from './entities';
 
 @Injectable()
@@ -19,6 +19,14 @@ export class MessageService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
+
+  async getAll() {
+    return this.messageRepository.find();
+  }
+
+  async getOne(id: number) {
+    return this.messageRepository.findOneBy({ id });
+  }
 
   async getByChat(chatId: number) {
     return this.messageRepository.find({
@@ -63,5 +71,31 @@ export class MessageService {
     const newMessage = await this.messageRepository.save(message);
 
     return newMessage.id;
+  }
+
+  async updateOne(updateMessage: UpdateMessageDTO) {
+    const errors = await validate(updateMessage);
+    if (errors.length) {
+      throw new HttpException(
+        { message: 'Message input is invalid', errors },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const { id, text: newText } = updateMessage;
+    const updated = await this.messageRepository.update(
+      { id },
+      { text: newText },
+    );
+    if (!updated.affected) {
+      throw new HttpException(
+        { message: 'Message not found' },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+  }
+
+  async deleteOne(id: number) {
+    await this.messageRepository.delete(id);
   }
 }
