@@ -21,4 +21,5 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ skipMissingProperties: true }));
   await app.listen(configService.getPort());
 }
+
 bootstrap();
