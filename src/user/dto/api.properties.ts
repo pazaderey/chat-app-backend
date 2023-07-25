@@ -12,3 +12,5 @@ export const usernameProps: ApiPropertyOptions = {
   required: true,
   maxLength: 30,
 };
+
+export const passwordProps: ApiPropertyOptions = {};

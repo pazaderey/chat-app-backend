@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { User } from '../entities/user.entity';
 
-import { usernameProps } from './api.properties';
+import { usernameProps, passwordProps } from './api.properties';
 
 export class CreateUserDTO implements Readonly<CreateUserDTO> {
   @ApiProperty(usernameProps)
@@ -11,9 +11,15 @@ export class CreateUserDTO implements Readonly<CreateUserDTO> {
   @IsString()
   username!: string;
 
+  @ApiProperty(passwordProps)
+  @IsNotEmpty()
+  @IsString()
+  password!: string;
+
   static toUser(dto: CreateUserDTO) {
     const it = new User();
     it.username = dto.username;
+    it.password = dto.password;
     return it;
   }
 }

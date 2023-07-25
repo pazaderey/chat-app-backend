@@ -50,7 +50,7 @@ export class UserService {
     const user = CreateUserDTO.toUser(createUser);
 
     const newUser = await this.usersRepository.save(user);
-    return newUser.id;
+    return newUser;
   }
 
   async updateOne(updateUser: UpdateUserDTO) {

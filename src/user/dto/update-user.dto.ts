@@ -2,7 +2,7 @@ import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateUserDTO } from './create-user.dto';
 
-import { idProps, usernameProps } from './api.properties';
+import { idProps, usernameProps, passwordProps } from './api.properties';
 
 export class UpdateUserDTO implements Partial<CreateUserDTO> {
   @ApiProperty(idProps)
@@ -11,7 +11,10 @@ export class UpdateUserDTO implements Partial<CreateUserDTO> {
   readonly id!: number;
 
   @ApiProperty({ ...usernameProps, description: 'New username' })
-  @IsNotEmpty()
   @IsString()
-  username!: string;
+  username?: string;
+
+  @ApiProperty(passwordProps)
+  @IsString()
+  password?: string;
 }

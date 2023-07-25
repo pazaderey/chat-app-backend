@@ -74,7 +74,7 @@ export class MessageService {
 
     const newMessage = await this.messageRepository.save(message);
 
-    return newMessage.id;
+    return newMessage;
   }
 
   async updateOne(updateMessage: UpdateMessageDTO) {

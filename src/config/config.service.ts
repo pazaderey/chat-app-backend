@@ -1,7 +1,7 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { join } from 'path';
 
-require('dotenv').config({ path: join(__dirname, '../../.env') });
+require('dotenv').config({ path: join(__dirname, '../../.env.dev') });
 
 export class ConfigService {
   constructor(private env: { [k: string]: string | undefined }) {}
@@ -24,6 +24,10 @@ export class ConfigService {
     return this.getValue('PORT') ?? 0;
   }
 
+  getSecret() {
+    return this.getValue('SECRET_KEY') ?? 'SECRET';
+  }
+
   isProduction() {
     const mode = this.getValue('MODE', false);
     return mode !== 'DEV';
@@ -38,6 +42,7 @@ export class ConfigService {
       password: this.getValue('POSTGRES_PASSWORD'),
       database: this.getValue('POSTGRES_DB'),
       entities: [join(__dirname, '../**/*.entity.{ts,js}')],
+      migrations: [join(__dirname), '../migrations/**/*{.ts,.js}'],
       autoLoadEntities: true,
       synchronize: true,
     };

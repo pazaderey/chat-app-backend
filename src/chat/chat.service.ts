@@ -78,7 +78,7 @@ export class ChatService {
 
     chat.users = users;
     const newChat = await this.chatRepository.save(chat);
-    return newChat.id;
+    return newChat;
   }
 
   async updateOne(updateChat: UpdateChatDTO) {
