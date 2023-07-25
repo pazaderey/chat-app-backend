@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -17,6 +18,7 @@ import {
 
 import { CreateUserDTO, UpdateUserDTO } from './dto';
 import { UserService } from './user.service';
+import { JwtAuthGuard } from 'src/auth/strategy/jwt-auth.guard';
 
 @Controller('users')
 export class UserController {
@@ -28,6 +30,7 @@ export class UserController {
   @ApiUnprocessableEntityResponse({
     description: 'User with such name already exists',
   })
+  @UseGuards(JwtAuthGuard)
   @Post('add')
   async createOne(@Body() body: CreateUserDTO) {
     return this.userService.createOne(body);
@@ -40,6 +43,7 @@ export class UserController {
   @ApiUnprocessableEntityResponse({
     description: 'User with such name already exists',
   })
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('update')
   async updateOne(@Body() body: UpdateUserDTO) {

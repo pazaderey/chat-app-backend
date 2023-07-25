@@ -1,3 +1,4 @@
+import { hashSync } from 'bcrypt';
 import { validate } from 'class-validator';
 import {
   BadRequestException,
@@ -62,23 +63,31 @@ export class UserService {
       });
     }
 
-    const { id, username: newUsername } = updateUser;
-    const existingUsername = await this.usersRepository.findOneBy({
-      username: newUsername,
-    });
-    if (existingUsername !== null) {
-      throw new UnprocessableEntityException({
-        message: `User with username ${newUsername} already exists`,
+    const { id, username: newUsername, password: newPasswordRaw } = updateUser;
+    if (newUsername) {
+      const existingUsername = await this.usersRepository.findOneBy({
+        username: newUsername,
       });
+      if (existingUsername !== null) {
+        throw new UnprocessableEntityException({
+          message: `User with username ${newUsername} already exists`,
+        });
+      }
     }
 
-    const updated = await this.usersRepository.update(
-      { id },
-      { username: newUsername },
-    );
-    if (!updated.affected) {
+    const oldUser = await this.usersRepository.findOneBy({ id });
+    if (!oldUser) {
       throw new NotFoundException({ message: 'User not found' });
     }
+    let newPassword = oldUser.password;
+    if (newPasswordRaw) {
+      newPassword = hashSync(newPasswordRaw, 8);
+    }
+
+    await this.usersRepository.update(
+      { id },
+      { username: newUsername, password: newPassword },
+    );
   }
 
   async deleteOne(id: number) {

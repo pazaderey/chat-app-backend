@@ -1,3 +1,4 @@
+import { hashSync } from 'bcrypt';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -19,7 +20,7 @@ export class CreateUserDTO implements Readonly<CreateUserDTO> {
   static toUser(dto: CreateUserDTO) {
     const it = new User();
     it.username = dto.username;
-    it.password = dto.password;
+    it.password = hashSync(dto.password, 8);
     return it;
   }
 }

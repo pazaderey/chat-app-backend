@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -19,6 +20,7 @@ import {
 
 import { ChatService } from './chat.service';
 import { CreateChatDTO, FindChatDTO, UpdateChatDTO } from './dto';
+import { JwtAuthGuard } from 'src/auth/strategy/jwt-auth.guard';
 
 @Controller('chats')
 export class ChatController {
@@ -28,8 +30,9 @@ export class ChatController {
     summary: 'Get user chats ordered by last message sent time DESC',
   })
   @ApiOkResponse({ description: 'Success' })
-  @Get('get')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
+  @Get('get')
   async getByUser(@Body() body: FindChatDTO) {
     return this.chatService.getByUser(body.user);
   }
@@ -40,6 +43,7 @@ export class ChatController {
   @ApiUnprocessableEntityResponse({
     description: 'Chat with such name already exists',
   })
+  @UseGuards(JwtAuthGuard)
   @Post('add')
   async createOne(@Body() createChat: CreateChatDTO) {
     return this.chatService.createOne(createChat);
@@ -52,6 +56,7 @@ export class ChatController {
   @ApiUnprocessableEntityResponse({
     description: 'Chat with such name already exists',
   })
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('update')
   async updateOne(@Body() body: UpdateChatDTO) {

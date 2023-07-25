@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -18,6 +19,7 @@ import {
 
 import { CreateMessageDTO, FindMessageDTO, UpdateMessageDTO } from './dto';
 import { MessageService } from './message.service';
+import { JwtAuthGuard } from 'src/auth/strategy/jwt-auth.guard';
 
 @Controller('messages')
 export class MessageController {
@@ -38,6 +40,7 @@ export class MessageController {
   @ApiNotFoundResponse({
     description: 'Chat or author ID not found in the database',
   })
+  @UseGuards(JwtAuthGuard)
   @Post('add')
   async createOne(@Body() body: CreateMessageDTO) {
     return this.messageService.createOne(body);
@@ -47,6 +50,7 @@ export class MessageController {
   @ApiNoContentResponse({ description: 'Updated' })
   @ApiBadRequestResponse({ description: 'Message input is invalid' })
   @ApiNotFoundResponse({ description: 'Message not found' })
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('update')
   async updateOne(@Body() body: UpdateMessageDTO) {

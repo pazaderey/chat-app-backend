@@ -8,12 +8,14 @@ import { ChatModule } from 'src/chat/chat.module';
 import { UserModule } from 'src/user/user.module';
 import { Chat } from 'src/chat/entities/chat.entity';
 import { User } from 'src/user/entities/user.entity';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Message, User, Chat]),
     UserModule,
     ChatModule,
+    AuthModule,
   ],
   providers: [MessageService],
   controllers: [MessageController],
