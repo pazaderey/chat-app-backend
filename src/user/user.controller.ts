@@ -24,18 +24,6 @@ import { JwtAuthGuard } from 'src/auth/strategy/jwt-auth.guard';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @ApiOperation({ summary: 'Creates new user in the database' })
-  @ApiCreatedResponse({ description: 'Created', type: Number })
-  @ApiBadRequestResponse({ description: 'User input is invalid' })
-  @ApiUnprocessableEntityResponse({
-    description: 'User with such name already exists',
-  })
-  @UseGuards(JwtAuthGuard)
-  @Post('add')
-  async createOne(@Body() body: CreateUserDTO) {
-    return this.userService.createOne(body);
-  }
-
   @ApiOperation({ summary: 'Updates username by ID' })
   @ApiNoContentResponse({ description: 'Updated' })
   @ApiBadRequestResponse({ description: 'User input is invalid' })
