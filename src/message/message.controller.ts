@@ -2,12 +2,15 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   HttpCode,
   HttpStatus,
   Patch,
   Post,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -23,7 +26,10 @@ import { JwtAuthGuard } from 'src/auth/strategy/jwt-auth.guard';
 
 @Controller('messages')
 export class MessageController {
-  constructor(private messageService: MessageService) {}
+  constructor(
+    private messageService: MessageService,
+    private jwtService: JwtService,
+  ) {}
 
   @ApiOperation({
     summary: 'Get all messages from the chat ordered by send time ASC',
@@ -42,7 +48,15 @@ export class MessageController {
   })
   @UseGuards(JwtAuthGuard)
   @Post('add')
-  async createOne(@Body() body: CreateMessageDTO) {
+  async createOne(
+    @Headers('authorization') auth: string,
+    @Body() body: CreateMessageDTO,
+  ) {
+    const token = auth.split(' ')[1];
+    const sender = this.jwtService.decode(token);
+    if ((sender as { [key: string]: any }).id !== body.author) {
+      throw new UnauthorizedException('Cannot send message by other users');
+    }
     return this.messageService.createOne(body);
   }
 

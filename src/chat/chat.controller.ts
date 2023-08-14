@@ -2,12 +2,15 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   HttpCode,
   HttpStatus,
   Patch,
   Post,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -24,7 +27,10 @@ import { JwtAuthGuard } from 'src/auth/strategy/jwt-auth.guard';
 
 @Controller('chats')
 export class ChatController {
-  constructor(private chatService: ChatService) {}
+  constructor(
+    private chatService: ChatService,
+    private jwtService: JwtService,
+  ) {}
 
   @ApiOperation({
     summary: 'Get user chats ordered by last message sent time DESC',
@@ -33,7 +39,15 @@ export class ChatController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Get('get')
-  async getByUser(@Body() body: FindChatDTO) {
+  async getByUser(
+    @Headers('authorization') auth: string,
+    @Body() body: FindChatDTO,
+  ) {
+    const token = auth.split(' ')[1];
+    const searcher = this.jwtService.decode(token);
+    if ((searcher as { [key: string]: any }).id !== body.user) {
+      throw new UnauthorizedException('Cannot get chats of other users');
+    }
     return this.chatService.getByUser(body.user);
   }
 
